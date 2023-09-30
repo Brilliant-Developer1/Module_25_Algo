@@ -60,23 +60,21 @@
 
 using namespace std;
 
-int dp[1005][1005];
 int lcs(string a, int n, string b, int m)
 {
     if (n == 0 || m == 0)
         return 0;
-    if (dp[n][m] != -1)
-        return dp[n][m];
+
     if (a[n - 1] == b[m - 1])
     {
         int ans = lcs(a, n - 1, b, m - 1);
-        return dp[n][m] = ans + 1;
+        return ans + 1;
     }
     else
     {
         int ans1 = lcs(a, n - 1, b, m);
         int ans2 = lcs(a, n, b, m - 1);
-        return dp[n][m] = max(ans1, ans2);
+        return max(ans1, ans2);
     }
 }
 int main()
@@ -84,7 +82,35 @@ int main()
 
     string a, b;
     cin >> a >> b;
-    memset(dp, -1, sizeof(dp));
-    cout << lcs(a, a.size(), b, b.size());
+    int n = a.size();
+    int m = b.size();
+
+    int dp[n + 1][m + 1];
+
+    for (int i = 0; i <= n; i++)
+    {
+        for (int j = 0; j <= m; j++)
+        {
+            if (i == 0 || j == 0)
+                dp[i][j] = 0;
+        }
+    }
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= m; j++)
+        {
+            if (a[i - 1] == b[j - 1])
+            {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            }
+            else
+            {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+    cout << dp[n][m] << endl;
     return 0;
 }
+
+// O(n*m)
